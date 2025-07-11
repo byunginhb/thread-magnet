@@ -1,0 +1,82 @@
+Task 1-1. Next.js 14 + TypeScript 프로젝트 초기화 및 설정
+- 작업완료
+Task 1-2. TailwindCSS, shadcn/ui 설치 및 초기 세팅
+- 작업전
+Task 1-3. FSD 기반 폴더 구조 설계 및 생성
+- 작업전
+
+Task 2-1. Firebase 프로젝트 연결 (프로젝트명: thread-magnet)
+- 작업전
+Task 2-2. Firebase SDK 초기화 (firebaseConfig 및 mcp 설정)
+- 작업전
+Task 2-3. Firebase Auth + Google 로그인 기능 구현
+- 작업전
+Task 2-4. 로그인 유무에 따라 UI 분기 처리 (비로그인도 사용 가능)
+- 작업전
+
+Task 3-1. Firestore 연동 및 초기 스키마 설계 (users, histories, credits)
+- 작업전
+Task 3-2. 가입 시 사용자 firestore document 생성 및 크레딧 50 지급
+- 작업전
+Task 3-3. 로그인 유저의 생성 이력 히스토리 기록 구조 설계
+- 작업전
+Task 3-4. Firestore에서 로그인 사용자의 크레딧 정보 조회 및 표시
+- 작업전
+
+Task 4-1. 홈(/) 페이지에 서비스 소개 및 CTA 버튼 구성
+- 작업전
+Task 4-2. Header에 로그인/로그아웃 버튼 및 사용자 이름 표시
+- 작업전
+Task 4-3. Header에 ‘히스토리 보기’ 버튼 (로그인 시에만 표시)
+- 작업전
+
+Task 5-1. /generate 페이지 생성 및 기본 구조 구현
+- 작업전
+Task 5-2. 주제, 타겟 고객, 쓰레드 스타일 입력 필드 구현
+- 작업전
+Task 5-3. ‘생성하기’ 버튼 및 입력 유효성 검증 처리
+- 작업전
+Task 5-4. 다크모드 및 반응형 스타일링 적용
+- 작업전
+
+Task 6-1. Firebase Gemini API 호출용 서버 액션 또는 유틸 작성
+- 작업전
+Task 6-2. 사용자 입력을 Gemini Prompt로 변환하는 로직 작성
+- 작업전
+Task 6-3. Gemini 응답 결과 파싱 및 출력용 포맷 구성
+- 작업전
+Task 6-4. 생성 시 비로그인 사용자는 크레딧 차감 없음, 로그인 사용자는 크레딧 차감 처리
+- 작업전
+
+Task 7-1. 생성된 쓰레드 결과 카드 UI 구성
+- 작업전
+Task 7-2. 카드 내 복사, 다시 생성, 저장(로그인 시) 버튼 기능 구현
+- 작업전
+Task 7-3. Firestore에 생성 히스토리 저장 (로그인한 사용자만)
+- 작업전
+
+Task 8-1. /history 페이지 구성 (로그인 사용자의 생성 이력 리스트)
+- 작업전
+Task 8-2. 히스토리에서 생성 결과 복사 및 재사용 기능 구현
+- 작업전
+Task 8-3. 크레딧 잔액 확인 및 부족 시 안내 메시지 처리
+- 작업전
+
+Task 9-1. Firestore 보안 규칙 작성 (read/write 조건 분기)
+- 작업전
+Task 9-2. Firebase console에서 실시간 데이터 확인 및 디버깅
+- 작업전
+
+Task 10-1. Vercel에 프로젝트 연결 및 첫 배포
+- 작업전
+Task 10-2. Vercel 환경변수 설정 (Firebase + Gemini 관련 키)
+- 작업전
+Task 10-3. 배포 버전에서 Firebase 연동 및 기능 테스트 완료
+- 작업전
+
+Task 11-1. SEO 및 메타태그, OG 이미지 설정
+- 작업전
+Task 11-2. 향후 기능 목록 문서화 (SNS 공유, 결제 시스템 등)
+- 작업전
+Task 11-3. 기술 문서 및 README 작성
+- 작업전
