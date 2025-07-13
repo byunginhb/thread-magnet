@@ -1,0 +1,57 @@
+프로젝트명: ThreadMagnet
+
+설명:
+ThreadMagnet은 사용자가 입력한 주제와 타겟 고객 정보를 기반으로, 고품질의 Thread 콘텐츠를 자동으로 생성하는 웹 기반 도구입니다. 
+사용자는 로그인 없이도 생성 기능을 이용할 수 있으며, 로그인 시에는 생성 히스토리 저장, 크레딧 관리 등의 부가 기능을 활용할 수 있습니다.
+
+기술 스택:
+- Frontend: Next.js 14 (App Router) + TypeScript
+- Styling: TailwindCSS + shadcn/ui
+- AI: Firebase Gemini API
+- 인증: Firebase Auth (Google 로그인)
+- 데이터베이스: Firestore (users, credits, histories)
+- 배포: Vercel
+
+핵심 기능:
+- 사용자 입력 기반 쓰레드 콘텐츠 자동 생성
+- 로그인 없이 사용 가능
+- 로그인 시 크레딧 시스템 적용 (최초 50 지급, 생성 시 1 차감)
+- 로그인 유저는 생성 이력(history) 저장 및 조회 가능
+- Gemini API 응답을 트위터 스타일로 카드 형식 출력
+- 크레딧 부족 시 생성 차단 및 메시지 출력
+- 반응형 UI + 다크모드 지원
+
+페이지 구성:
+
+1. 홈(/)
+- 프로젝트 소개 문구와 Call-to-Action 버튼 구성
+- 배경은 gradient blur 또는 glassmorphism 스타일
+- 버튼은 rounded, shadow, hover transition이 있는 고급 디자인 적용
+
+2. 생성 페이지(/generate)
+- 입력 필드 3개: 주제, 타겟 고객, 쓰레드 스타일 선택
+- 생성 버튼: 모든 필수 입력 완료 시 활성화
+- 결과 출력: 생성된 쓰레드를 카드 형태로 출력하며 문단별 복사 버튼 포함
+- 로그인 사용자는 결과 저장 가능, 비로그인 사용자는 미저장
+- 로그인 사용자의 경우 크레딧 차감 후 결과 출력
+- 비로그인 사용자는 크레딧 차감 없이 결과 출력
+
+3. 히스토리 페이지(/history)
+- 로그인 사용자 전용
+- Firestore에 저장된 생성 이력 표시
+- 리스트는 날짜 기준으로 정렬되며, 각 항목은 복사 및 재생성 가능
+- 크레딧 잔여량 표시
+
+UI 스타일링 기준:
+- 전체 UI는 modern minimalism을 기반으로 설계
+- TailwindCSS를 기반으로 한 soft shadow, 큰 radius, 적절한 spacing 사용
+- 카드 UI는 glassmorphism 또는 투명 배경에 blur 적용
+- 버튼은 shadcn/ui 기반 구성, hover 시 scale 또는 ring 효과
+- 다크모드 지원을 기본으로 설정
+- 적절한 애니메이션을 넣어서 풍부해보이도록 작업
+- 반응형으로 만들어서 모바일, PC 모두 어색하지 않도록 적용
+
+기타 조건:
+- Firestore에는 사용자 document(users), 생성 이력(histories), 크레딧 상태(credits)를 분리하여 저장
+- Firestore 규칙은 인증된 사용자만 자신의 정보에 접근 가능하도록 구성
+- 모든 기능은 모바일, 태블릿, 데스크탑에서도 동일하게 동작하도록 반응형 대응
