@@ -1,13 +1,100 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/shared/components/ui/button';
+import { useAuth } from '@/features/auth/useAuth';
+import { db } from '@/lib/firebase';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+
+function makePrompt(topic: string, target: string, style: string) {
+  return `주제: ${topic}\n타겟: ${target}\n스타일: ${style}`.trim();
+}
 
 export default function GeneratePage() {
+  const { user } = useAuth();
   const [topic, setTopic] = useState('');
   const [target, setTarget] = useState('');
   const [style, setStyle] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<string[]>([]);
+  const [credits, setCredits] = useState<number | null>(null);
+  const [checkingCredits, setCheckingCredits] = useState(false);
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 
   const isValid = topic.trim() && target.trim() && style.trim();
+
+  // 로그인 유저의 credits 조회
+  useEffect(() => {
+    if (!user) {
+      setCredits(null);
+      return;
+    }
+    setCheckingCredits(true);
+    getDoc(doc(db, 'users', user.uid)).then((snap) => {
+      setCredits(snap.exists() ? snap.data().credits ?? 0 : 0);
+      setCheckingCredits(false);
+    });
+  }, [user]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!isValid) return;
+    setError(null);
+    setResult([]);
+
+    // 로그인 유저: 크레딧 확인 및 차감
+    if (user) {
+      if (checkingCredits) {
+        setError(
+          '크레딧 정보를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.'
+        );
+        return;
+      }
+      if (credits === null) {
+        setError('크레딧 정보를 불러올 수 없습니다.');
+        return;
+      }
+      if (credits < 1) {
+        setError('크레딧이 부족합니다. (최소 1 필요)');
+        return;
+      }
+      // 크레딧 차감
+      setLoading(true);
+      try {
+        await updateDoc(doc(db, 'users', user.uid), { credits: credits - 1 });
+        setCredits(credits - 1);
+      } catch (e) {
+        setLoading(false);
+        setError('크레딧 차감에 실패했습니다.');
+        return;
+      }
+    }
+    // Gemini 호출
+    setLoading(true);
+    try {
+      const prompt = makePrompt(topic, target, style);
+      const res = await fetch('/api/gemini', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ prompt }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || '생성 실패');
+      setResult([data.result as string]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleCopy(text: string, idx: number) {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIdx(idx);
+      setTimeout(() => setCopiedIdx(null), 1200);
+    } catch {}
+  }
 
   return (
     <div className='min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gradient-to-br from-[#f0fdfa] to-[#e0e7ff] dark:from-[#18181b] dark:to-[#23272f]'>
@@ -15,7 +102,12 @@ export default function GeneratePage() {
         <h2 className='text-2xl sm:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-fuchsia-600 to-indigo-600 dark:from-blue-300 dark:via-fuchsia-400 dark:to-indigo-300'>
           Thread 생성하기
         </h2>
-        <form className='flex flex-col gap-6'>
+        {user && (
+          <div className='text-right text-sm text-gray-700 dark:text-gray-200 mb-2'>
+            내 크레딧: {checkingCredits ? '...' : credits}
+          </div>
+        )}
+        <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
           <div className='flex flex-col gap-2'>
             <label
               htmlFor='topic'
@@ -70,10 +162,26 @@ export default function GeneratePage() {
             type='submit'
             size='lg'
             className='mt-4 rounded-full font-semibold text-base bg-gradient-to-r from-blue-500 to-fuchsia-500 shadow-lg hover:scale-105 hover:ring-2 hover:ring-fuchsia-400 transition-all'
-            disabled={!isValid}>
-            생성하기
+            disabled={!isValid || loading}>
+            {loading ? '생성 중...' : '생성하기'}
           </Button>
         </form>
+        {error && (
+          <div className='text-red-500 text-center font-semibold'>{error}</div>
+        )}
+        {result.length > 0 && (
+          <div className='flex flex-col gap-4 mt-6'>
+            <div className='relative rounded-xl bg-white/90 dark:bg-black/40 border border-gray-200 dark:border-gray-700 shadow p-4 text-base text-gray-800 dark:text-gray-100 animate-fade-in'>
+              <button
+                type='button'
+                className='absolute top-2 right-2 px-2 py-1 text-xs rounded bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 transition'
+                onClick={() => handleCopy(result[0], 0)}>
+                {copiedIdx === 0 ? '복사됨!' : 'Copy'}
+              </button>
+              <div style={{ whiteSpace: 'pre-line' }}>{result[0]}</div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
