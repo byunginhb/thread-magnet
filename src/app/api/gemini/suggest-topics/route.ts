@@ -9,6 +9,7 @@ const SUGGEST_PROMPT = `
 - 각 주제는 20자 이내로, 너무 뻔하지 않게, 다양한 분야로.
 - 반드시 배열(JSON array) 형태로만 응답해. (예: ["주제1", "주제2", ...])
 - 불필요한 설명, 인삿말, 안내문구 없이 배열만 출력해.
+- 질문이 아닌 주제를 추천해줘
 `;
 
 export async function POST(req: NextRequest) {

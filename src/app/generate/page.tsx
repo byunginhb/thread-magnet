@@ -208,53 +208,6 @@ export default function GeneratePage() {
         <h2 className='text-2xl sm:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-fuchsia-600 to-indigo-600 dark:from-blue-300 dark:via-fuchsia-400 dark:to-indigo-300'>
           Thread 생성하기
         </h2>
-        {/* 추천 주제 UI */}
-        <div className='flex flex-col gap-2'>
-          <div className='flex items-center gap-2'>
-            <span className='font-semibold text-gray-700 dark:text-gray-200'>
-              추천 주제
-            </span>
-            <Button
-              type='button'
-              size='sm'
-              onClick={fetchSuggestedTopics}
-              disabled={suggestLoading}>
-              {suggestLoading ? (
-                <AnimatePresence mode='wait'>
-                  <motion.span
-                    key={suggestMsgIdx}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.35 }}>
-                    {suggestLoadingMessages[suggestMsgIdx]}
-                  </motion.span>
-                </AnimatePresence>
-              ) : (
-                '추천 주제 불러오기'
-              )}
-            </Button>
-          </div>
-          {suggestError && (
-            <div className='text-xs text-red-500'>{suggestError}</div>
-          )}
-          <div className='flex flex-wrap gap-2 mt-1'>
-            {suggestedTopics.map((t) => (
-              <button
-                key={t}
-                type='button'
-                className={
-                  'px-3 py-1 rounded-full border text-xs font-medium transition ' +
-                  (topic === t
-                    ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
-                    : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
-                }
-                onClick={() => setTopic(t)}>
-                {t}
-              </button>
-            ))}
-          </div>
-        </div>
         {/* 기존 폼 */}
         {user && (
           <div className='text-right text-sm text-gray-700 dark:text-gray-200 mb-2'>
@@ -265,6 +218,53 @@ export default function GeneratePage() {
           <GenerateLoading />
         ) : (
           <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
+            {/* 추천 주제 UI */}
+            <div className='flex flex-col gap-2'>
+              <div className='flex items-center gap-2'>
+                <span className='font-semibold text-gray-700 dark:text-gray-200'>
+                  추천 주제
+                </span>
+                <Button
+                  type='button'
+                  size='sm'
+                  onClick={fetchSuggestedTopics}
+                  disabled={suggestLoading}>
+                  {suggestLoading ? (
+                    <AnimatePresence mode='wait'>
+                      <motion.span
+                        key={suggestMsgIdx}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{ duration: 0.35 }}>
+                        {suggestLoadingMessages[suggestMsgIdx]}
+                      </motion.span>
+                    </AnimatePresence>
+                  ) : (
+                    '추천 주제 불러오기'
+                  )}
+                </Button>
+              </div>
+              {suggestError && (
+                <div className='text-xs text-red-500'>{suggestError}</div>
+              )}
+              <div className='flex flex-wrap gap-2 mt-1'>
+                {suggestedTopics.map((t) => (
+                  <button
+                    key={t}
+                    type='button'
+                    className={
+                      'px-3 py-1 rounded-full border text-xs font-medium transition ' +
+                      (topic === t
+                        ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
+                        : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
+                    }
+                    onClick={() => setTopic(t)}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className='flex flex-col gap-2'>
               <label
                 htmlFor='topic'
