@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { initializeApp, getApps } from 'firebase/app';
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 
@@ -12,7 +12,7 @@ const SUGGEST_PROMPT = `
 - 질문이 아닌 주제를 추천해줘
 `;
 
-export async function POST(req: NextRequest) {
+export async function POST() {
   // 환경변수에서 firebaseConfig 구성
   const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       topics = JSON.parse(text);
     } catch {
       // 혹시 LLM이 배열 외 형식으로 응답하면, 대괄호 부분만 추출해서 파싱 시도
-      const match = text.match(/\[.*\]/s);
+      const match = text.match(/\[.*\]/);
       if (match) {
         topics = JSON.parse(match[0]);
       }
