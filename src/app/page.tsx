@@ -35,7 +35,7 @@ export default function Home() {
             </li>
             <li className='flex items-center gap-2'>
               <KeyRound size={18} />
-              로그인 시 히스토리/크레딧 관리
+              로그인 시 히스토리 관리
             </li>
             <li className='flex items-center gap-2'>
               <Monitor size={18} />

@@ -13,7 +13,7 @@ export default function GeneratePage() {
   const { user } = useAuth();
   const [topic, setTopic] = useState('');
   const [target, setTarget] = useState('');
-  const [style, setStyle] = useState('');
+  const [style, setStyle] = useState('casual');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<string[]>([]);
@@ -22,6 +22,13 @@ export default function GeneratePage() {
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
 
   const isValid = topic.trim() && target.trim() && style.trim();
+
+  const styleOptions = [
+    { value: 'casual', label: '캐주얼/친근형' },
+    { value: 'informative', label: '정보 전달형' },
+    { value: 'storytelling', label: '스토리텔링형' },
+    { value: 'persuasive', label: '설득형' },
+  ];
 
   // 로그인 유저의 credits 조회
   useEffect(() => {
@@ -146,17 +153,22 @@ export default function GeneratePage() {
               className='font-semibold text-gray-700 dark:text-gray-200'>
               쓰레드 스타일
             </label>
-            <select
-              id='style'
-              value={style}
-              onChange={(e) => setStyle(e.target.value)}
-              className='rounded-lg border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-black/30 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition'>
-              <option value=''>스타일 선택</option>
-              <option value='informative'>정보 전달형</option>
-              <option value='storytelling'>스토리텔링형</option>
-              <option value='persuasive'>설득/영업형</option>
-              <option value='casual'>캐주얼/친근형</option>
-            </select>
+            <div className='flex gap-2 flex-wrap mt-1'>
+              {styleOptions.map((s) => (
+                <button
+                  key={s.value}
+                  type='button'
+                  className={
+                    'px-4 py-2 rounded-full border text-sm font-semibold transition ' +
+                    (style === s.value
+                      ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
+                      : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
+                  }
+                  onClick={() => setStyle(s.value)}>
+                  {s.label}
+                </button>
+              ))}
+            </div>
           </div>
           <Button
             type='submit'

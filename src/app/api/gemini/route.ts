@@ -3,10 +3,14 @@ import { initializeApp, getApps } from 'firebase/app';
 import { getAI, getGenerativeModel, GoogleAIBackend } from 'firebase/ai';
 
 const BASE_PROMPT = `
-- ThreadMagnet은 사용자가 입력한 주제, 타겟, 스타일을 바탕으로 고품질 Thread 콘텐츠를 생성하는 서비스야.
+- 너의 역할은 글쓰기 전문가야.
+- 사용자가 입력한 주제, 타겟, 스타일을 바탕으로 고품질 Thread 콘텐츠를 생성하는 서비스야.
 - Thread는 500자 이하로, 5~7문단, 각 문단은 1~2문장으로 작성해.
 - 반드시 반말로 작성하고, 대답 없이 Thread 본문만 출력해.
+- 꼭 길게 쓸 필요는 없어 최대한 간결하고 읽기 편하게 써줘.
 - 불필요한 인삿말, 설명, 해시태그, 안내문구 없이 Thread 본문만 출력해.
+- LLM이 작성한 티가 전혀 안나도록 해줘
+- 교과서적인 언어보다는 완전 친한 친구한테 말하는것 처럼 해줘, 하지만 배려심은 조금 줘
 `;
 
 export async function POST(req: NextRequest) {
