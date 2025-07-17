@@ -13,20 +13,19 @@ export default function Home() {
         <div className='backdrop-blur-xl bg-white/60 dark:bg-black/30 rounded-3xl shadow-2xl p-8 sm:p-12 flex flex-col items-center gap-6 border border-white/30 dark:border-white/10 animate-fade-in'>
           <img src='/logo.png' alt='ThreadMagnet 로고' className='w-60 h-60 ' />
           <p className='text-lg sm:text-xl text-gray-800 dark:text-gray-100 font-medium leading-relaxed'>
-            누구나 쉽고 빠르게{' '}
+            누구나 쉽고 빠르게 <br />
             <span className='font-bold text-fuchsia-600 dark:text-fuchsia-300'>
-              고품질 Thread 콘텐츠
+              Thread 콘텐츠를 AI로 자동 생성
             </span>
-            를<br />
-            AI로 자동 생성하는 웹 도구입니다.
             <br />
-            주제와 타겟만 입력하면,{' '}
+            하는 서비스 입니다.
+            <br /> 주제와 타겟만 입력하면, <br />
             <span className='font-semibold text-blue-600 dark:text-blue-300'>
               AI가 Thread를 완성
             </span>
             해 드려요.
           </p>
-          <ul className='text-sm sm:text-base text-gray-600 dark:text-gray-300 flex flex-col gap-1 items-center'>
+          <ul className='text-sm sm:text-base text-gray-600 dark:text-gray-300 flex flex-col gap-1 items-start'>
             <li className='flex items-center gap-2'>
               <Sparkles size={18} />
               로그인 없이 Thread 생성 가능
@@ -37,7 +36,7 @@ export default function Home() {
             </li>
             <li className='flex items-center gap-2'>
               <Monitor size={18} />
-              반응형 · 다크모드 · 미니멀 UI
+              반응형 · 미니멀 UI
             </li>
           </ul>
           <Button
