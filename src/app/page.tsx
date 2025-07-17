@@ -11,9 +11,7 @@ export default function Home() {
       </div>
       <main className='z-10 flex flex-col items-center gap-10 max-w-2xl w-full text-center'>
         <div className='backdrop-blur-xl bg-white/60 dark:bg-black/30 rounded-3xl shadow-2xl p-8 sm:p-12 flex flex-col items-center gap-6 border border-white/30 dark:border-white/10 animate-fade-in'>
-          <h1 className='text-4xl sm:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-fuchsia-600 to-indigo-600 dark:from-blue-300 dark:via-fuchsia-400 dark:to-indigo-300 drop-shadow-lg'>
-            ThreadMagnet
-          </h1>
+          <img src='/logo.png' alt='ThreadMagnet 로고' className='w-60 h-60 ' />
           <p className='text-lg sm:text-xl text-gray-800 dark:text-gray-100 font-medium leading-relaxed'>
             누구나 쉽고 빠르게{' '}
             <span className='font-bold text-fuchsia-600 dark:text-fuchsia-300'>

@@ -23,6 +23,18 @@ export default function Header() {
 
   return (
     <header className='w-full flex items-center justify-between p-4 border-b bg-white/80 dark:bg-black/40 backdrop-blur z-20'>
+      <div className='flex items-center gap-2'>
+        <Link href='/' className='flex items-center gap-2 group'>
+          <img
+            src='/logo.png'
+            alt='ThreadMagnet 로고'
+            className='w-8 h-8 rounded-full shadow'
+          />
+          <span className='text-lg font-bold bg-gradient-to-r from-blue-600 via-fuchsia-600 to-indigo-600 bg-clip-text text-transparent group-hover:opacity-80 transition'>
+            ThreadMagnet
+          </span>
+        </Link>
+      </div>
       <nav className='flex gap-2 sm:gap-4'>
         {navItems.map((item) => (
           <Link
