@@ -22,26 +22,26 @@ export default function Header() {
   ];
 
   return (
-    <header className='w-full flex items-center justify-between p-4 border-b bg-white/80 dark:bg-black/40 backdrop-blur z-20'>
-      <div className='flex items-center gap-2'>
-        <Link href='/' className='flex items-center gap-2 group'>
+    <header className='w-full flex flex-wrap items-center justify-between gap-y-2 p-3 sm:p-4 border-b bg-white/80 dark:bg-black/40 backdrop-blur z-20 min-h-[56px]'>
+      <div className='flex items-center gap-2 min-w-0'>
+        <Link href='/' className='flex items-center gap-2 group min-w-0'>
           <img
             src='/logo.png'
             alt='ThreadMagnet 로고'
-            className='w-8 h-8 rounded-full shadow'
+            className='w-8 h-8 rounded-full shadow shrink-0'
           />
-          <span className='text-lg font-bold bg-gradient-to-r from-blue-600 via-fuchsia-600 to-indigo-600 bg-clip-text text-transparent group-hover:opacity-80 transition'>
+          <span className='hidden sm:inline truncate text-lg font-bold bg-gradient-to-r from-blue-600 via-fuchsia-600 to-indigo-600 bg-clip-text text-transparent group-hover:opacity-80 transition max-w-[120px] sm:max-w-none'>
             ThreadMagnet
           </span>
         </Link>
       </div>
-      <nav className='flex gap-2 sm:gap-4'>
+      <nav className='flex flex-wrap gap-1 sm:gap-4 min-w-0 overflow-x-auto'>
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
             className={
-              'px-3 py-1 rounded-full text-sm font-semibold transition ' +
+              'px-3 py-1 rounded-full text-sm font-semibold transition whitespace-nowrap ' +
               (pathname === item.href
                 ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white shadow'
                 : 'text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
@@ -50,7 +50,9 @@ export default function Header() {
           </Link>
         ))}
       </nav>
-      <GoogleAuthButton />
+      <div className='flex-shrink-0 ml-auto'>
+        <GoogleAuthButton />
+      </div>
     </header>
   );
 }
