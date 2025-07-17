@@ -168,7 +168,7 @@ export default function GeneratePage() {
               type='text'
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              placeholder='예: AI 트렌드, 생산성 팁 등'
+              placeholder='예: 쓰레드 친구 늘리기, 사회 생활 팁, AI 도구 추천 등'
               className='rounded-lg border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-black/30 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition'
               autoComplete='off'
             />
