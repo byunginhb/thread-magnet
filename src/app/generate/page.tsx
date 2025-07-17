@@ -11,6 +11,7 @@ import {
   collection,
   serverTimestamp,
 } from 'firebase/firestore';
+import GenerateLoading from '@/widgets/GenerateLoading';
 
 function makePrompt(topic: string, target: string, style: string) {
   return `주제: ${topic}\n타겟: ${target}\n스타일: ${style}`.trim();
@@ -156,86 +157,90 @@ export default function GeneratePage() {
             내 크레딧: {checkingCredits ? '...' : credits}
           </div>
         )}
-        <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
-          <div className='flex flex-col gap-2'>
-            <label
-              htmlFor='topic'
-              className='font-semibold text-gray-700 dark:text-gray-200'>
-              주제
-            </label>
-            <input
-              id='topic'
-              type='text'
-              value={topic}
-              onChange={(e) => setTopic(e.target.value)}
-              placeholder='예: 쓰레드 친구 늘리기, 사회 생활 팁, AI 도구 추천 등'
-              className='rounded-lg border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-black/30 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition'
-              autoComplete='off'
-            />
-          </div>
-          <div className='flex flex-col gap-2'>
-            <label
-              htmlFor='target'
-              className='font-semibold text-gray-700 dark:text-gray-200'>
-              타겟 고객
-            </label>
-            <div className='flex gap-2 flex-wrap mb-1'>
-              {targetOptions.map((t) => (
-                <button
-                  key={t}
-                  type='button'
-                  className={
-                    'px-3 py-1 rounded-full border text-xs font-medium transition ' +
-                    (target === t
-                      ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
-                      : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
-                  }
-                  onClick={() => setTarget(t)}>
-                  {t}
-                </button>
-              ))}
+        {loading ? (
+          <GenerateLoading />
+        ) : (
+          <form className='flex flex-col gap-6' onSubmit={handleSubmit}>
+            <div className='flex flex-col gap-2'>
+              <label
+                htmlFor='topic'
+                className='font-semibold text-gray-700 dark:text-gray-200'>
+                주제
+              </label>
+              <input
+                id='topic'
+                type='text'
+                value={topic}
+                onChange={(e) => setTopic(e.target.value)}
+                placeholder='예: 쓰레드 친구 늘리기, 사회 생활 팁, AI 도구 추천 등'
+                className='rounded-lg border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-black/30 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition'
+                autoComplete='off'
+              />
             </div>
-            <input
-              id='target'
-              type='text'
-              value={target}
-              onChange={(e) => setTarget(e.target.value)}
-              placeholder='예: 개발자, 마케터, 스타트업 창업가 등'
-              className='rounded-lg border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-black/30 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition'
-              autoComplete='off'
-            />
-          </div>
-          <div className='flex flex-col gap-2'>
-            <label
-              htmlFor='style'
-              className='font-semibold text-gray-700 dark:text-gray-200'>
-              쓰레드 스타일
-            </label>
-            <div className='flex gap-2 flex-wrap mt-1'>
-              {styleOptions.map((s) => (
-                <button
-                  key={s.value}
-                  type='button'
-                  className={
-                    'px-4 py-2 rounded-full border text-sm font-semibold transition ' +
-                    (style === s.value
-                      ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
-                      : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
-                  }
-                  onClick={() => setStyle(s.value)}>
-                  {s.label}
-                </button>
-              ))}
+            <div className='flex flex-col gap-2'>
+              <label
+                htmlFor='target'
+                className='font-semibold text-gray-700 dark:text-gray-200'>
+                타겟 고객
+              </label>
+              <div className='flex gap-2 flex-wrap mb-1'>
+                {targetOptions.map((t) => (
+                  <button
+                    key={t}
+                    type='button'
+                    className={
+                      'px-3 py-1 rounded-full border text-xs font-medium transition ' +
+                      (target === t
+                        ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
+                        : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
+                    }
+                    onClick={() => setTarget(t)}>
+                    {t}
+                  </button>
+                ))}
+              </div>
+              <input
+                id='target'
+                type='text'
+                value={target}
+                onChange={(e) => setTarget(e.target.value)}
+                placeholder='예: 개발자, 마케터, 스타트업 창업가 등'
+                className='rounded-lg border border-gray-300 dark:border-gray-700 bg-white/80 dark:bg-black/30 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 dark:focus:ring-blue-600 transition'
+                autoComplete='off'
+              />
             </div>
-          </div>
-          <Button
-            type='submit'
-            size='lg'
-            className='mt-4 rounded-full font-semibold text-base bg-gradient-to-r from-blue-500 to-fuchsia-500 shadow-lg hover:scale-105 hover:ring-2 hover:ring-fuchsia-400 transition-all'
-            disabled={!isValid || loading}>
-            {loading ? '생성 중...' : '생성하기'}
-          </Button>
-        </form>
+            <div className='flex flex-col gap-2'>
+              <label
+                htmlFor='style'
+                className='font-semibold text-gray-700 dark:text-gray-200'>
+                쓰레드 스타일
+              </label>
+              <div className='flex gap-2 flex-wrap mt-1'>
+                {styleOptions.map((s) => (
+                  <button
+                    key={s.value}
+                    type='button'
+                    className={
+                      'px-4 py-2 rounded-full border text-sm font-semibold transition ' +
+                      (style === s.value
+                        ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
+                        : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
+                    }
+                    onClick={() => setStyle(s.value)}>
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Button
+              type='submit'
+              size='lg'
+              className='mt-4 rounded-full font-semibold text-base bg-gradient-to-r from-blue-500 to-fuchsia-500 shadow-lg hover:scale-105 hover:ring-2 hover:ring-fuchsia-400 transition-all'
+              disabled={!isValid || loading}>
+              {loading ? '생성 중...' : '생성하기'}
+            </Button>
+          </form>
+        )}
         {error && (
           <div className='text-red-500 text-center font-semibold'>{error}</div>
         )}
