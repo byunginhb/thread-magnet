@@ -12,6 +12,7 @@ import {
   serverTimestamp,
 } from 'firebase/firestore';
 import GenerateLoading from '@/widgets/GenerateLoading';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function makePrompt(topic: string, target: string, style: string) {
   return `주제: ${topic}\n타겟: ${target}\n스타일: ${style}`.trim();
@@ -31,6 +32,9 @@ export default function GeneratePage() {
   const [saveStatus, setSaveStatus] = useState<null | 'success' | 'error'>(
     null
   );
+  const [suggestedTopics, setSuggestedTopics] = useState<string[]>([]);
+  const [suggestLoading, setSuggestLoading] = useState(false);
+  const [suggestError, setSuggestError] = useState<string | null>(null);
 
   const isValid = topic.trim() && target.trim() && style.trim();
 
@@ -64,6 +68,58 @@ export default function GeneratePage() {
       setCheckingCredits(false);
     });
   }, [user]);
+
+  // 추천 주제 로딩 문구
+  const suggestLoadingMessages = [
+    'AI가 고민 중... 🤔',
+    '트렌디한 주제 찾는 중... 🔍',
+    '재치있는 아이디어 생성 중... 💡',
+    'AI가 머리 싸매는 중... 🧠',
+    '주제를 뽑는 중... 🎲',
+  ];
+  const [suggestMsgIdx, setSuggestMsgIdx] = useState(0);
+  useEffect(() => {
+    if (!suggestLoading) return;
+    setSuggestMsgIdx(0);
+    const interval = setInterval(() => {
+      setSuggestMsgIdx((prev) => (prev + 1) % suggestLoadingMessages.length);
+    }, 1400);
+    return () => clearInterval(interval);
+  }, [suggestLoading]);
+
+  // 생성하기 버튼 로딩 문구
+  const generateLoadingMessages = [
+    'AI가 글 쓰는 중... ✍️',
+    '베스트셀러 작가인 척... 📚',
+    '엄청난 속도로 생성 중... ⚡',
+    '창의력 폭발 중... 💥',
+    '문장에 영혼을 불어넣는 중... 👻',
+  ];
+  const [generateMsgIdx, setGenerateMsgIdx] = useState(0);
+  useEffect(() => {
+    if (!loading) return;
+    setGenerateMsgIdx(0);
+    const interval = setInterval(() => {
+      setGenerateMsgIdx((prev) => (prev + 1) % generateLoadingMessages.length);
+    }, 1400);
+    return () => clearInterval(interval);
+  }, [loading]);
+
+  async function fetchSuggestedTopics() {
+    setSuggestLoading(true);
+    setSuggestError(null);
+    try {
+      const res = await fetch('/api/gemini/suggest-topics', { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || '추천 주제 불러오기 실패');
+      setSuggestedTopics(data.topics);
+    } catch (e) {
+      setSuggestError(e instanceof Error ? e.message : String(e));
+      setSuggestedTopics([]);
+    } finally {
+      setSuggestLoading(false);
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -152,6 +208,54 @@ export default function GeneratePage() {
         <h2 className='text-2xl sm:text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-fuchsia-600 to-indigo-600 dark:from-blue-300 dark:via-fuchsia-400 dark:to-indigo-300'>
           Thread 생성하기
         </h2>
+        {/* 추천 주제 UI */}
+        <div className='flex flex-col gap-2'>
+          <div className='flex items-center gap-2'>
+            <span className='font-semibold text-gray-700 dark:text-gray-200'>
+              추천 주제
+            </span>
+            <Button
+              type='button'
+              size='sm'
+              onClick={fetchSuggestedTopics}
+              disabled={suggestLoading}>
+              {suggestLoading ? (
+                <AnimatePresence mode='wait'>
+                  <motion.span
+                    key={suggestMsgIdx}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.35 }}>
+                    {suggestLoadingMessages[suggestMsgIdx]}
+                  </motion.span>
+                </AnimatePresence>
+              ) : (
+                '추천 주제 불러오기'
+              )}
+            </Button>
+          </div>
+          {suggestError && (
+            <div className='text-xs text-red-500'>{suggestError}</div>
+          )}
+          <div className='flex flex-wrap gap-2 mt-1'>
+            {suggestedTopics.map((t) => (
+              <button
+                key={t}
+                type='button'
+                className={
+                  'px-3 py-1 rounded-full border text-xs font-medium transition ' +
+                  (topic === t
+                    ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
+                    : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
+                }
+                onClick={() => setTopic(t)}>
+                {t}
+              </button>
+            ))}
+          </div>
+        </div>
+        {/* 기존 폼 */}
         {user && (
           <div className='text-right text-sm text-gray-700 dark:text-gray-200 mb-2'>
             내 크레딧: {checkingCredits ? '...' : credits}
@@ -237,7 +341,20 @@ export default function GeneratePage() {
               size='lg'
               className='mt-4 rounded-full font-semibold text-base bg-gradient-to-r from-blue-500 to-fuchsia-500 shadow-lg hover:scale-105 hover:ring-2 hover:ring-fuchsia-400 transition-all'
               disabled={!isValid || loading}>
-              {loading ? '생성 중...' : '생성하기'}
+              {loading ? (
+                <AnimatePresence mode='wait'>
+                  <motion.span
+                    key={generateMsgIdx}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.35 }}>
+                    {generateLoadingMessages[generateMsgIdx]}
+                  </motion.span>
+                </AnimatePresence>
+              ) : (
+                '생성하기'
+              )}
             </Button>
           </form>
         )}
