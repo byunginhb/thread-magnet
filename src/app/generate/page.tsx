@@ -3,7 +3,14 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/shared/components/ui/button';
 import { useAuth } from '@/features/auth/useAuth';
 import { db } from '@/lib/firebase';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  updateDoc,
+  addDoc,
+  collection,
+  serverTimestamp,
+} from 'firebase/firestore';
 
 function makePrompt(topic: string, target: string, style: string) {
   return `주제: ${topic}\n타겟: ${target}\n스타일: ${style}`.trim();
@@ -20,6 +27,9 @@ export default function GeneratePage() {
   const [credits, setCredits] = useState<number | null>(null);
   const [checkingCredits, setCheckingCredits] = useState(false);
   const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const [saveStatus, setSaveStatus] = useState<null | 'success' | 'error'>(
+    null
+  );
 
   const isValid = topic.trim() && target.trim() && style.trim();
 
@@ -28,6 +38,17 @@ export default function GeneratePage() {
     { value: 'informative', label: '정보 전달형' },
     { value: 'storytelling', label: '스토리텔링형' },
     { value: 'persuasive', label: '설득형' },
+  ];
+
+  const targetOptions = [
+    '랜덤',
+    '개발자',
+    '마케터',
+    '창업가',
+    '디자이너',
+    '학생',
+    '직장인',
+    '프리랜서',
   ];
 
   // 로그인 유저의 credits 조회
@@ -103,6 +124,26 @@ export default function GeneratePage() {
     } catch {}
   }
 
+  async function handleSave() {
+    if (!user || !result[0]) return;
+    setSaveStatus(null);
+    try {
+      await addDoc(collection(db, 'histories'), {
+        uid: user.uid,
+        content: result[0],
+        createdAt: serverTimestamp(),
+      });
+      setSaveStatus('success');
+    } catch {
+      setSaveStatus('error');
+    }
+    setTimeout(() => setSaveStatus(null), 1500);
+  }
+
+  function handleRegenerate() {
+    handleSubmit({ preventDefault: () => {} } as React.FormEvent);
+  }
+
   return (
     <div className='min-h-screen flex flex-col items-center justify-center px-4 py-12 bg-gradient-to-br from-[#f0fdfa] to-[#e0e7ff] dark:from-[#18181b] dark:to-[#23272f]'>
       <div className='w-full max-w-lg bg-white/70 dark:bg-black/40 rounded-3xl shadow-2xl p-8 sm:p-12 flex flex-col gap-8 border border-white/30 dark:border-white/10 backdrop-blur-xl animate-fade-in'>
@@ -137,6 +178,22 @@ export default function GeneratePage() {
               className='font-semibold text-gray-700 dark:text-gray-200'>
               타겟 고객
             </label>
+            <div className='flex gap-2 flex-wrap mb-1'>
+              {targetOptions.map((t) => (
+                <button
+                  key={t}
+                  type='button'
+                  className={
+                    'px-3 py-1 rounded-full border text-xs font-medium transition ' +
+                    (target === t
+                      ? 'bg-gradient-to-r from-blue-500 to-fuchsia-500 text-white border-transparent shadow'
+                      : 'bg-white dark:bg-black/30 border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-blue-50 dark:hover:bg-blue-900')
+                  }
+                  onClick={() => setTarget(t)}>
+                  {t}
+                </button>
+              ))}
+            </div>
             <input
               id='target'
               type='text'
@@ -191,6 +248,35 @@ export default function GeneratePage() {
                 {copiedIdx === 0 ? '복사됨!' : 'Copy'}
               </button>
               <div style={{ whiteSpace: 'pre-line' }}>{result[0]}</div>
+              <div className='flex gap-2 mt-4 justify-end'>
+                <Button
+                  type='button'
+                  size='sm'
+                  variant='outline'
+                  onClick={handleRegenerate}
+                  disabled={loading}>
+                  다시 생성
+                </Button>
+                {user && (
+                  <Button
+                    type='button'
+                    size='sm'
+                    variant='secondary'
+                    onClick={handleSave}>
+                    저장
+                  </Button>
+                )}
+              </div>
+              {saveStatus === 'success' && (
+                <div className='text-green-600 text-xs mt-2'>
+                  히스토리 저장 완료!
+                </div>
+              )}
+              {saveStatus === 'error' && (
+                <div className='text-red-500 text-xs mt-2'>
+                  저장 실패. 다시 시도해 주세요.
+                </div>
+              )}
             </div>
           </div>
         )}

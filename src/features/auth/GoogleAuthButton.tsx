@@ -19,9 +19,6 @@ export default function GoogleAuthButton() {
         <span className='text-sm font-semibold text-gray-800 dark:text-gray-100 px-2 py-1 rounded bg-gray-100 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-700'>
           {user.displayName || user.email}
         </span>
-        <Button asChild variant='secondary' size='sm' className='rounded-full'>
-          <Link href='/history'>히스토리 보기</Link>
-        </Button>
         <Button
           onClick={logout}
           variant='outline'
