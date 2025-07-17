@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 export default function HistoryPage() {
   const { user, loading } = useAuth();
   const [histories, setHistories] = useState<
-    { id: string; content: string; createdAt: any }[]
+    { id: string; content: string; createdAt: Date | null }[]
   >([]);
   const [credits, setCredits] = useState<number | null>(null);
   const [fetching, setFetching] = useState(false);
@@ -70,7 +70,7 @@ export default function HistoryPage() {
           </div>
         ) : (
           <div className='flex flex-col gap-6'>
-            {histories.map((h, i) => (
+            {histories.map((h) => (
               <div
                 key={h.id}
                 className='relative rounded-xl bg-white/90 dark:bg-black/40 border border-gray-200 dark:border-gray-700 shadow p-4 text-base text-gray-800 dark:text-gray-100 animate-fade-in'>

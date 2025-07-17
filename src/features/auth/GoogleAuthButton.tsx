@@ -1,7 +1,6 @@
 'use client';
 import { useAuth } from './useAuth';
 import { Button } from '@/shared/components/ui/button';
-import Link from 'next/link';
 
 export default function GoogleAuthButton() {
   const { user, loading, login, logout } = useAuth();

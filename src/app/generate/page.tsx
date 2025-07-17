@@ -92,6 +92,7 @@ export default function GeneratePage() {
         await updateDoc(doc(db, 'users', user.uid), { credits: credits - 1 });
         setCredits(credits - 1);
       } catch (e) {
+        console.error(e);
         setLoading(false);
         setError('크레딧 차감에 실패했습니다.');
         return;
